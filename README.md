@@ -1,2 +1,3 @@
-# Comet-New
- comet but we actually work on it lol
+# Comet-Windows
+
+PC Mod Menu for Pixel Strike 3D
