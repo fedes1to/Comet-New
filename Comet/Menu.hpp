@@ -121,6 +121,9 @@ void SetupImGuiStyle()
 	style.Colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.0f, 0.0f, 0.0f, 0.699999988079071f);
 	style.Colors[ImGuiCol_NavWindowingDimBg] = ImVec4(1.0f, 0.0f, 0.0f, 0.2000000029802322f);
 	style.Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(1.0f, 0.0f, 0.0f, 0.3499999940395355f);
+	style.FramePadding = ImVec2(4, 2);
+	style.ItemSpacing = ImVec2(4, 2);
+	style.ScrollbarSize = 12;
 }
 
 void DrawMenu() {
@@ -131,7 +134,7 @@ void DrawMenu() {
 									ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoResize;
 	ImGui::Begin("Comet", &menuOpen, windowflags);
 	{
-		ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_FittingPolicyResizeDown | ImGuiTabBarFlags_NoTooltip;
+		ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_NoTooltip;
 		ImGuiStyle& style = ImGui::GetStyle();
 		style.FrameRounding = 10.0f;
 		style.WindowRounding = 10.0f;
@@ -141,7 +144,7 @@ void DrawMenu() {
 			if (ImGui::BeginTabItem(OBFUSTR("Gameplay"))) {
 				ImGui::Separator();
 
-				ImGui::Checkbox("Always get free cases at end of match", (bool*)&getfreecases);
+				ImGui::Checkbox("Triggerbot", (bool*)&triggerbot);
 				ImGui::Checkbox("Rapid Fire", (bool*)&firerate);
 				ImGui::Checkbox("Grenade Bullet", (bool*)&GrenadeBullet);
 				ImGui::Checkbox("Insta Scope", (bool*)&InstaScope);
@@ -151,7 +154,48 @@ void DrawMenu() {
 				ImGui::Checkbox("No Recoil", (bool*)&recoil);
 				ImGui::Checkbox("Infinite Equipment", (bool*)&eqcooldown);
 
-				ImGui::Checkbox("Triggerbot", (bool*)&triggerbot);
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Checkbox("Fake Head Pos", (bool*)&FakeHeadPos);
+				ImGui::Checkbox("Fly Hack", (bool*)&FlyHack);
+				ImGui::Checkbox("Bonus Speed Hack", (bool*)&bonusSpeedHack);
+				ImGui::SameLine();
+				ImGui::Text("[Risk it?]");
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Spacing();
+				ImGui::Checkbox("Always get free cases at end of match", (bool*)&getfreecases);
 				ImGui::EndTabItem();
 			}
 			if (ImGui::BeginTabItem(OBFUSTR("Visual"))) {
@@ -165,9 +209,6 @@ void DrawMenu() {
 				ImGui::EndTabItem();
 			}
 			if (ImGui::BeginTabItem(OBFUSTR("Account"))) {
-
-				ImGui::Checkbox("Infinite Coins Test", (bool*)&coinstest);
-
 
 				if (ImGui::Button("Add item"))
 					addItem(410);
@@ -204,6 +245,12 @@ void DrawMenu() {
 			}
 			if (ImGui::BeginTabItem(OBFUSTR("Testing"))) {
 				ImGui::InputText("object name", &objectName);
+				ImGui::Checkbox("index Bullet", (bool*)&test16);
+				ImGui::Checkbox("clip", (bool*)&test15);
+				ImGui::Checkbox("BulletSpeed", (bool*)&test17);
+
+
+
 
 				if (ImGui::Button("instantiate")) {
 					auto res = Resources$$Load(CreateIl2cppString(objectName.c_str()));

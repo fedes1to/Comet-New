@@ -80,6 +80,7 @@ void EndGameMenu(Unity::CObject* self) {
 	return old_EndGameMenu(self);
 }
 
+
 bool esp = false;
 bool esp_teammates = true;
 int timer = 30;
@@ -108,7 +109,14 @@ bool recoil = false;
 bool eqcooldown = false;
 bool GrenadeBullet = false;
 bool coinstest = false;
-
+bool RedScreen = false;
+bool rewardtest = false;
+bool test15 = false;
+bool test16 = false;
+bool test17 = false;
+bool bonusSpeedHack = false;
+bool FlyHack = false;
+bool FakeHeadPos = false;
 bool InstaScope = false;
 bool LongMelee = false;
 
@@ -134,13 +142,11 @@ void WeaponController$$Update(Unity::CObject* self) {
 			return old_WeaponController$$Update(self);
 		my_team = health->GetMemberValue<int>("team");
 
-		Unity::CObject* ModMenu = self->GetMemberValue<Unity::CObject*>("ModMenu"); // ???
-
-		if (coinstest) {
-			self->SetMemberValue<float>("coin", 999999999.0f);
-		}
 
 
+
+
+		
 		if (ammo) {
 			if (!believable) {
 				self->SetMemberValue<bool>("unlimitedAmmo", true);
@@ -150,9 +156,15 @@ void WeaponController$$Update(Unity::CObject* self) {
 			}
 		}
 
-		if (GrenadeBullet) { //fedesito fix it [easy to fix but im lazy]
-			self->SetMemberValue<float>("weaponType", 5.0f); // 4byte value [1 = Rifle] [2 = Sniper] [3 = Unknown] [5 = Grenade] [6 = Unknown] [7 = Unknown] [8 = Unknown] [9 = Rbg]
-		}
+
+
+		//more stuff coming soon
+		Unity::CObject* cur_wep = self->GetMemberValue<Unity::CObject*>("currentWeapon");
+
+
+
+
+
 		if (InstaScope) {
 			self->SetMemberValue<float>("weaponScopeSpeed", 9999.0f);
 		}
@@ -160,12 +172,12 @@ void WeaponController$$Update(Unity::CObject* self) {
 			self->SetMemberValue<float>("weaponIndex", 50.0f); //[Glitchy]
 		}
 		if (LongMelee) {
-			self->SetMemberValue<float>("range", 999999999999999999999999999999.0f); //[DNT Work]
+			self->SetMemberValue<float>("range", 999999999999999999999999999999.0f);
 		}
 
-		//more stuff coming soon
-		Unity::CObject* cur_wep = self->GetMemberValue<Unity::CObject*>("currentWeapon");
-
+		if (GrenadeBullet) { //fedesito fix it [easy to fix but im lazy]
+			cur_wep->SetMemberValue("weaponType", 5); // 4byte value [1 = Rifle] [2 = Sniper] [3 = Unknown] [5 = Grenade] [6 = Unknown] [7 = Unknown] [8 = Unknown] [9 = Rbg]
+		}
 		void* cam = self->GetMemberValue<void*>("camera");
 
 		fireKey = SettingsManager$$getSettingKeyBind(IL2CPP::Class::Utils::GetStaticField("SettingsManager", "instance"), CreateIl2cppString("Fire"));
@@ -230,6 +242,77 @@ void WeaponController$$Update(Unity::CObject* self) {
 	return old_WeaponController$$Update(self);
 }
 
+
+
+
+
+void (*old_KeyboardControls)(Unity::CObject* self);
+void KeyboardControls(Unity::CObject* self) {
+
+	if (FlyHack) {
+		self->SetMemberValue<bool>("onLadder", true);
+	}
+	return old_KeyboardControls(self);
+}
+
+
+
+
+void (*old_NetworkPlayer)(Unity::CObject* self);
+void NetworkPlayer(Unity::CObject* self) {
+
+	return old_NetworkPlayer(self);
+}
+
+
+void (*old_PlayerController)(Unity::CObject* self);
+void PlayerController(Unity::CObject* self) {
+
+	if (bonusSpeedHack) {
+		self->SetMemberValue<float>("bonusSpeed", 15.0f); // risk your acc
+
+	}
+	if (FakeHeadPos) {
+		self->SetMemberValue<float>("defaultHeadPos", 100.0f);
+
+	}
+	else
+	{
+		self->SetMemberValue<float>("defaultHeadPos", 1.0f);
+	}
+	return old_PlayerController(self);
+}
+
+
+void (*old_BulletTracerController)(Unity::CObject* self);
+void BulletTracerController(Unity::CObject* self) {
+	if (test16) {
+		self->SetMemberValue<float>("index", 999.0f);
+	}
+	if (test17) {
+		self->SetMemberValue<float>("bulletSpeed", 999.0f);
+
+	}
+
+	return old_BulletTracerController(self);
+}
+
+void (*old_BulletImpactController)(Unity::CObject* self);
+void BulletImpactController(Unity::CObject* self) {
+
+	if (test15) {
+		self->SetMemberValue<float>("clipIndex", 99.0f);
+		self->SetMemberValue<float>("clip", 99.0f);
+
+	}
+	return old_BulletImpactController(self);
+}
+
+
+
+
+
+
 void DrawESP() {
 	void* cam = get_player_camera();
 	if (esp && cam) {
@@ -288,10 +371,16 @@ bool InputHook2(int keyCode) {
 	}
 	return old_InputHook2(keyCode);
 }
-
+bool addXp = false;
 void (*old_GameShell$$Update)(Unity::CObject* self);
 void GameShell$$Update(Unity::CObject* self) {
 	isTeamMode = self->CallMethod<bool>("isTeamMode");
+	if (addXp) {
+		self->SetMemberValue<int>("xpPerKill", 9999999);
+	}
+
+
+
 	return old_GameShell$$Update(self);
 }
 
@@ -301,6 +390,10 @@ void hooks() {
 	HOOKD_IL2CPP("UnityEngine.Debug", "LogWarning", Debug$$LogError);
 	HOOKD_IL2CPP("UnityEngine.Debug", "LogError", Debug$$LogError);
 	HOOKD_IL2CPP("WeaponController", "Update", WeaponController$$Update);
+	HOOKD_IL2CPP("KeyboardControls", "Update", KeyboardControls);
+	HOOKD_IL2CPP("NetworkPlayer", "Update", NetworkPlayer); //fail
+	HOOKD_IL2CPP("PlayerController", "Update", PlayerController);
+	HOOKD_IL2CPP("BulletTracerController", "Update", BulletTracerController);
 	HOOKD_IL2CPP("UnityEngine.Input", "GetKeyDownInt", InputHook);
 	HOOKD_IL2CPP("UnityEngine.Input", "GetKeyInt", InputHook2);
 	HOOKD_IL2CPP("EndGameMenu", "Update", EndGameMenu);
