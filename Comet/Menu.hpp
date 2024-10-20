@@ -113,72 +113,68 @@ void SetupImGuiStyle()
 	style.TabRounding = 4;
 }
 
+int currentTab = 100;
 
 void DrawMenu() {
 	ImVec2 displaySize = ImGui::GetIO().DisplaySize;
 	ImVec2 windowSize = ImVec2(displaySize.x * 0.3f, displaySize.y * 0.57f);
 	ImGui::SetNextWindowSize(windowSize);
 	ImGuiWindowFlags windowflags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar |
-									ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoResize;
+		ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoResize;
 	ImGui::Begin("Comet", &menuOpen, windowflags);
 	{
-		ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_NoTooltip;
-		ImGuiStyle& style = ImGui::GetStyle();
+		ImGui::BeginChild("TButtons", ImVec2(135, 145), true);
+		if (ImGui::Button("Gameplay")) currentTab = 0;
+		if (ImGui::Button("Visual")) currentTab = 1;
+		if (ImGui::Button("Account")) currentTab = 2;
+		if (ImGui::Button("Info")) currentTab = 3;
+		ImGui::EndChild();
 
-		if (ImGui::BeginTabBar(OBFUSTR("Menu"), tab_bar_flags)) {
-			if (ImGui::BeginTabItem(OBFUSTR("Gameplay"))) {
-				ImGui::Separator();
+		ImGui::SameLine();
+		ImGui::BeginChild("Content", ImVec2(0, 0), true);
 
-				ImGui::Checkbox("Triggerbot", (bool*)&triggerbot);
-				ImGui::Checkbox("Fast Bullet", (bool*)&test17);
-				ImGui::Checkbox("Rapid Fire", (bool*)&firerate);
-				ImGui::Checkbox("Grenade Bullet", (bool*)&GrenadeBullet);
-				ImGui::Checkbox("Insta Scope", (bool*)&InstaScope);
-				ImGui::Checkbox("Long Melee", (bool*)&LongMelee);
-				ImGui::Checkbox("Rapid Equipment", (bool*)&RapidEquipment);
-				ImGui::Checkbox("Unlimited Ammo", (bool*)&ammo);
-				ImGui::Checkbox("No Recoil", (bool*)&recoil);
-				ImGui::Checkbox("Infinite Equipment", (bool*)&eqcooldown);
-				ImGui::Checkbox("Fake Head Pos", (bool*)&FakeHeadPos);
-				ImGui::Checkbox("Fly Hack", (bool*)&FlyHack);
-				ImGui::Checkbox("Bonus Speed Hack", (bool*)&bonusSpeedHack);
-				ImGui::SameLine();
-				ImGui::Text("[Risk it?]");
-				ImGui::Checkbox("Always get free cases at end of match", (bool*)&getfreecases);
-				ImGui::EndTabItem();
+		switch (currentTab) {
+		case 0:
+			ImGui::Checkbox("Triggerbot", (bool*)&triggerbot);
+			ImGui::Checkbox("Fast Bullet", (bool*)&test17);
+			ImGui::Checkbox("Rapid Fire", (bool*)&firerate);
+			ImGui::Checkbox("Grenade Bullet", (bool*)&GrenadeBullet);
+			ImGui::Checkbox("Insta Scope", (bool*)&InstaScope);
+			ImGui::Checkbox("Long Melee", (bool*)&LongMelee);
+			ImGui::Checkbox("Rapid Equipment", (bool*)&RapidEquipment);
+			ImGui::Checkbox("Unlimited Ammo", (bool*)&ammo);
+			ImGui::Checkbox("No Recoil", (bool*)&recoil);
+			ImGui::Checkbox("Infinite Equipment", (bool*)&eqcooldown);
+			ImGui::Checkbox("Fake Head Pos", (bool*)&FakeHeadPos);
+			ImGui::Checkbox("Fly Hack", (bool*)&FlyHack);
+			ImGui::Checkbox("Bonus Speed Hack", (bool*)&bonusSpeedHack);
+			ImGui::SameLine();
+			ImGui::Text("[Risk it?]");
+			ImGui::Checkbox("Always get free cases at end of match", (bool*)&getfreecases);
+			break;
+
+		case 1:
+			ImGui::Checkbox("Box", (bool*)&esp);
+			if (ImGui::CollapsingHeader("ESP - Properties")) {
+				ImGui::Checkbox("ESP: Show teammates", (bool*)&esp_teammates);
 			}
-			if (ImGui::BeginTabItem(OBFUSTR("Visual"))) {
-				ImGui::Checkbox("Box", (bool*)&esp);
+			break;
 
-				ImGui::Separator();
-				if (ImGui::CollapsingHeader("ESP - Properties")) {
-					ImGui::Checkbox("ESP: Show teammates", (bool*)&esp_teammates);
-				}
+		case 2:
+			if (ImGui::Button("Get VIP")) buyVIP();
+			if (ImGui::Button("Get MVP")) buyMVP();
+			ImGui::Text("+++ Coming soon");
+			break;
 
-				ImGui::EndTabItem();				
-
-			}
-			if (ImGui::BeginTabItem(OBFUSTR("Account"))) {
-
-
-				if (ImGui::Button("get vip"))
-					buyVIP();
-
-				if (ImGui::Button("get mvp"))
-					buyMVP();
-				ImGui::Text("+++ Coming soon");
-				ImGui::EndTabItem();
-			}
-			if (ImGui::BeginTabItem(OBFUSTR("Info"))) {
-				ImGui::TextUnformatted(OBFUSTR("Version:"));
-				if (version.empty())
-					version = Application$$Version()->ToString();
-				ImGui::Text(version.c_str());
-				ImGui::EndTabItem();
-			}
-			ImGui::EndTabBar();
+		case 3:
+			ImGui::TextUnformatted("Version:");
+			if (version.empty())
+				version = Application$$Version()->ToString();
+			ImGui::Text(version.c_str());
+			break;
 		}
+
+		ImGui::EndChild();
 	}
 	ImGui::End();
-
 }
