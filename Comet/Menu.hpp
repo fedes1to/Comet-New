@@ -16,7 +16,7 @@ void UnloadFunctions() {
 }
 
 CommandFunction GetFunction(const char* funcName) {
-	return (CommandFunction)GetProcAddress(hDll, funcName);
+	return (CommandFunction)GetProcAddress(hDll, funcName); 
 }
 
 
@@ -136,12 +136,19 @@ void DrawMenu() {
 		switch (currentTab) {
 		case 0:
 			ImGui::Checkbox("Triggerbot", (bool*)&triggerbot);
+
 			ImGui::Checkbox("Fast Bullet", (bool*)&test17);
 			ImGui::Checkbox("Rapid Fire", (bool*)&firerate);
+			ImGui::SameLine();
+			ImGui::Text("[Risk it?]");
 			ImGui::Checkbox("Grenade Bullet", (bool*)&GrenadeBullet);
+			ImGui::SameLine();
+			ImGui::Text("[Risk it?]");
 			ImGui::Checkbox("Insta Scope", (bool*)&InstaScope);
 			ImGui::Checkbox("Long Melee", (bool*)&LongMelee);
 			ImGui::Checkbox("Rapid Equipment", (bool*)&RapidEquipment);
+			ImGui::SameLine();
+			ImGui::Text("[Risk it?]");
 			ImGui::Checkbox("Unlimited Ammo", (bool*)&ammo);
 			ImGui::Checkbox("No Recoil", (bool*)&recoil);
 			ImGui::Checkbox("Infinite Equipment", (bool*)&eqcooldown);
