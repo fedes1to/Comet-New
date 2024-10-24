@@ -135,8 +135,6 @@ void DrawMenu() {
 
 		switch (currentTab) {
 		case 0:
-			ImGui::Checkbox("Triggerbot", (bool*)&triggerbot);
-
 			ImGui::Checkbox("Fast Bullet", (bool*)&test17);
 			ImGui::Checkbox("Rapid Fire", (bool*)&firerate);
 			ImGui::SameLine();
