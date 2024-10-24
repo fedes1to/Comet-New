@@ -1,3 +1,4 @@
+#include <winioctl.h>
 std::list<void*> hooked_methods; // use this for detach ig
 
 bool hook_func(void* address, void* fake_func, void** out_origin_func) {
@@ -119,6 +120,10 @@ bool FlyHack = false;
 bool FakeHeadPos = false;
 bool InstaScope = false;
 bool LongMelee = false;
+bool BrokenRate = false;
+bool fastrbgbullet = false;
+bool killall = false;
+bool bombp = false;
 
 bool believable = false;
 
@@ -185,7 +190,19 @@ void WeaponController$$Update(Unity::CObject* self) {
 		if (firerate) {
 			cur_wep->SetObscuredValue<float>("newFireRate", 0.0f);
 		}
+		if (BrokenRate) {
+			while (true)
+			{
+				cur_wep->SetObscuredValue<float>("newFireRate", 1.0f);
+				cur_wep->SetObscuredValue<float>("newFireRate", -1.0f);
+				cur_wep->SetObscuredValue<float>("newFireRate", -11.0f);
+				cur_wep->SetObscuredValue<float>("newFireRate", -2.0f);
+				cur_wep->SetObscuredValue<float>("newFireRate", 1.0f);
+				cur_wep->SetObscuredValue<float>("newFireRate", 0.0f);
 
+				return;
+			}
+		}
 		if (recoil) {
 			cur_wep->SetObscuredValue<float>("newRecoil", 0.0f);
 			cur_wep->SetObscuredValue<float>("newHipRecoil", 0.0f);
@@ -255,14 +272,15 @@ void KeyboardControls(Unity::CObject* self) {
 	return old_KeyboardControls(self);
 }
 
+void (*old_RPG)(Unity::CObject* self);
+void RPG(Unity::CObject* self) {
 
-
-
-void (*old_NetworkPlayer)(Unity::CObject* self);
-void NetworkPlayer(Unity::CObject* self) {
-
-	return old_NetworkPlayer(self);
+	if (fastrbgbullet) {
+		self->SetMemberValue<float>("speed", 9999.0f);
+	}
+	return old_RPG(self);
 }
+
 
 
 void (*old_PlayerController)(Unity::CObject* self);
@@ -296,7 +314,7 @@ void BulletTracerController(Unity::CObject* self) {
 
 	return old_BulletTracerController(self);
 }
-
+bool Health;
 void (*old_BulletImpactController)(Unity::CObject* self);
 void BulletImpactController(Unity::CObject* self) {
 
@@ -306,11 +324,12 @@ void BulletImpactController(Unity::CObject* self) {
 
 	}
 	return old_BulletImpactController(self);
-}
+	
+}void (*old_NetworkPlayer)(Unity::CObject* self);
+void NetworkPlayer(Unity::CObject* self) {
 
-
-
-
+	return old_NetworkPlayer(self);
+}	
 
 
 void DrawESP() {
@@ -354,6 +373,13 @@ void DrawESP() {
 }
 
 
+
+
+
+
+
+
+
 bool (*old_InputHook)(int);
 bool InputHook(int keyCode) {
 	bool is_firing_key = fireKey == keyCode;
@@ -390,8 +416,9 @@ void hooks() {
 	HOOKD_IL2CPP("UnityEngine.Debug", "LogWarning", Debug$$LogError);
 	HOOKD_IL2CPP("UnityEngine.Debug", "LogError", Debug$$LogError);
 	HOOKD_IL2CPP("WeaponController", "Update", WeaponController$$Update);
+	HOOKD_IL2CPP("RPG", "Update", RPG);
 	HOOKD_IL2CPP("KeyboardControls", "Update", KeyboardControls);
-	HOOKD_IL2CPP("NetworkPlayer", "Update", NetworkPlayer); //fail
+	HOOKD_IL2CPP("NetworkPlayer", "LateUpdate", NetworkPlayer);
 	HOOKD_IL2CPP("PlayerController", "Update", PlayerController);
 	HOOKD_IL2CPP("BulletTracerController", "Update", BulletTracerController);
 	HOOKD_IL2CPP("UnityEngine.Input", "GetKeyDownInt", InputHook);
